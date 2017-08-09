@@ -1,15 +1,15 @@
-ITKModuleTemplate
+ITKGraphCutSegmentation
 =================
 
 
-.. image:: https://circleci.com/gh/InsightSoftwareConsortium/ITKModuleTemplate.svg?style=shield
-    :target: https://circleci.com/gh/InsightSoftwareConsortium/ITKModuleTemplate
+.. image:: https://circleci.com/gh/InsightSoftwareConsortium/ITKGraphCutSegmentation.svg?style=shield
+    :target: https://circleci.com/gh/InsightSoftwareConsortium/ITKGraphCutSegmentation
 
-.. image:: https://travis-ci.org/InsightSoftwareConsortium/ITKModuleTemplate.svg?branch=master
-    :target: https://travis-ci.org/InsightSoftwareConsortium/ITKModuleTemplate
+.. image:: https://travis-ci.org/InsightSoftwareConsortium/ITKGraphCutSegmentation.svg?branch=master
+    :target: https://travis-ci.org/InsightSoftwareConsortium/ITKGraphCutSegmentation
 
-.. image:: https://img.shields.io/appveyor/ci/thewtex/itkmoduletemplate.svg
-    :target: https://ci.appveyor.com/project/thewtex/itkmoduletemplate
+.. image:: https://img.shields.io/appveyor/ci/thewtex/itkGraphCutSegmentation.svg
+    :target: https://ci.appveyor.com/project/thewtex/itkGraphCutSegmentation
 
 This is a module for the `Insight Toolkit (ITK) <http://itk.org>`_ for
 segmentation and registration. It is designed to work with the ITKv4 modular
@@ -27,17 +27,17 @@ started in a new repository::
   mkdir ITK/Modules/External/ITKMyModule
   cd ITK/Modules/External/ITKMyModule
   git init
-  git fetch https://github.com/InsightSoftwareConsortium/ITKModuleTemplate.git
+  git fetch https://github.com/InsightSoftwareConsortium/ITKGraphCutSegmentation.git
   git merge FETCH_HEAD
   rm -rf .git
   git init
   git add . .*
-  git commit -m "ENH: Initial ITKModuleTemplate import"
+  git commit -m "ENH: Initial ITKGraphCutSegmentation import"
 
 Create a new repository account via GitHub's web interface. The module should
 follow the naming convention, *ITK<MyModuleName>*.
 
-Search and replace *ModuleTemplate* with *MyModuleName* in ``CMakeLists.txt``
+Search and replace *GraphCutSegmentation* with *MyModuleName* in ``CMakeLists.txt``
 and ``itk-module.cmake``.
 
 Documentation on `how to populate the module

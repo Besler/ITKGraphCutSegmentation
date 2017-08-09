@@ -1,18 +1,18 @@
 itk_module_test()
 
-set(ModuleTemplateTests
+set(GraphCutSegmentationTests
   itkMinimalStandardRandomVariateGeneratorTest.cxx
   itkNormalDistributionImageSourceTest.cxx
   )
 
-CreateTestDriver(ModuleTemplate "${ModuleTemplate-Test_LIBRARIES}" "${ModuleTemplateTests}")
+CreateTestDriver(GraphCutSegmentation "${GraphCutSegmentation-Test_LIBRARIES}" "${GraphCutSegmentationTests}")
 
 itk_add_test(NAME itkMinimalStandardRandomVariateGeneratorTest
-  COMMAND ModuleTemplateTestDriver itkMinimalStandardRandomVariateGeneratorTest
+  COMMAND GraphCutSegmentationTestDriver itkMinimalStandardRandomVariateGeneratorTest
   )
 
 itk_add_test(NAME itkNormalDistributionImageSourceTest
-  COMMAND ModuleTemplateTestDriver --without-threads
+  COMMAND GraphCutSegmentationTestDriver --without-threads
   --compare
     ${ITK_TEST_OUTPUT_DIR}/itkNormalDistributionImageSourceTestOutput.mha
     DATA{Baseline/itkNormalDistributionImageSourceTestOutput.mha}
