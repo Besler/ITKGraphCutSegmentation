@@ -7,30 +7,28 @@
  *  Some rights reserved.
  */
 
- #ifndef __ImageGraphCut3DFilter_hxx_
-#define __ImageGraphCut3DFilter_hxx_
+#ifndef __ImageMultiLabelGraphCut3DFilter_hxx_
+#define __ImageMultiLabelGraphCut3DFilter_hxx_
 
 #include "itkTimeProbesCollectorBase.h"
 
 namespace itk {
-    template<typename TImage, typename TForeground, typename TBackground, typename TOutput>
-    ImageGraphCut3DFilter<TImage, TForeground, TBackground, TOutput>
-    ::ImageGraphCut3DFilter()
+    template<typename TInput, typename TMultiLabel, typename TOutput>
+    ImageMultiLabelGraphCut3DFilter<TInput, TMultiLabel, TOutput>
+    ::ImageMultiLabelGraphCut3DFilter()
             : m_Sigma(5.0),
               m_BoundaryDirectionType(NoDirection),
-              m_ForegroundPixelValue(255),
-              m_BackgroundPixelValue(0),
               m_PrintTimer(false) {
-        this->SetNumberOfRequiredInputs(3);
+        this->SetNumberOfRequiredInputs(2);
     }
 
-    template<typename TImage, typename TForeground, typename TBackground, typename TOutput>
-    ImageGraphCut3DFilter<TImage, TForeground, TBackground, TOutput>
-    ::~ImageGraphCut3DFilter() {
+    template<typename TInput, typename TMultiLabel, typename TOutput>
+    ImageMultiLabelGraphCut3DFilter<TInput, TMultiLabel, TOutput>
+    ::~ImageMultiLabelGraphCut3DFilter() {
     }
 
-    template<typename TImage, typename TForeground, typename TBackground, typename TOutput>
-    void ImageGraphCut3DFilter<TImage, TForeground, TBackground, TOutput>
+    template<typename TInput, typename TMultiLabel, typename TOutput>
+    void ImageMultiLabelGraphCut3DFilter<TInput, TMultiLabel, TOutput>
     ::GenerateData() {
         itk::TimeProbesCollectorBase timer;
 
@@ -39,8 +37,7 @@ namespace itk {
         ImageContainer images;
         images.input = GetInputImage();
         images.inputRegion = images.input->GetLargestPossibleRegion();
-        images.foreground = GetForegroundImage();
-        images.background = GetBackgroundImage();
+        images.multiLabel = GetMultiLabelImage();
         images.output = this->GetOutput();
         images.outputRegion = images.output->GetRequestedRegion();
 
@@ -84,9 +81,9 @@ namespace itk {
         }
     }
 
-    template<typename TImage, typename TForeground, typename TBackground, typename TOutput>
+    template<typename TInput, typename TMultiLabel, typename TOutput>
     template<typename TIndexImage>
-    std::vector<itk::Index<3> > ImageGraphCut3DFilter<TImage, TForeground, TBackground, TOutput>
+    std::vector<itk::Index<3> > ImageMultiLabelGraphCut3DFilter<TInput, TMultiLabel, TOutput>
     ::getPixelsLargerThanZero(const TIndexImage *const image) const{
         std::vector<itk::Index<3> > pixelsWithValueLargerThanZero;
 
@@ -101,13 +98,13 @@ namespace itk {
         return pixelsWithValueLargerThanZero;
     }
 
-    template<typename TImage, typename TForeground, typename TBackground, typename TOutput>
-    unsigned int ImageGraphCut3DFilter<TImage, TForeground, TBackground, TOutput>
-    ::ConvertIndexToVertexDescriptor(const itk::Index<3> index, typename TImage::RegionType region) {
-        typename TImage::SizeType size = region.GetSize();
+    template<typename TInput, typename TMultiLabel, typename TOutput>
+    unsigned int ImageMultiLabelGraphCut3DFilter<TInput, TMultiLabel, TOutput>
+    ::ConvertIndexToVertexDescriptor(const itk::Index<3> index, typename TInput::RegionType region) {
+        typename TInput::SizeType size = region.GetSize();
 
         return index[0] + index[1] * size[0] + index[2] * size[0] * size[1];
     }
 }
 
-#endif // __ImageGraphCut3DFilter_hxx_
+#endif // __ImageMultiLabelGraphCut3DFilter_hxx_
