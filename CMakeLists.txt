@@ -1,16 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
-SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 SET(CMAKE_CXX_STANDARD 14)
 
 project(ImageGraphCut3DSegmentation)
 
 # ITK
-FIND_PACKAGE(ITK REQUIRED ITKCommon ITKIOImageBase ITKIOPNG ITKIOMeta ITKIONRRD
-                          ITKImageIntensity ITKImageFeature
-                          ITKMathematicalMorphology
-                          ITKBinaryMathematicalMorphology ITKDistanceMap
-                          ITKTestKernel)
-INCLUDE( ${ITK_USE_FILE} )
+find_package(ITK REQUIRED)
+include(${ITK_USE_FILE})
 
 if( "${ITK_VERSION_MAJOR}" LESS 4 )
   MESSAGE(FATAL_ERROR "You must build ImageGraphCutSegmentation with ITK >= 4.0!")
@@ -19,6 +14,8 @@ endif( "${ITK_VERSION_MAJOR}" LESS 4 )
 # Set include directory
 set(GridCutDir ${CMAKE_CURRENT_SOURCE_DIR}/lib/gridcut/include)
 set(ImageGraphCut3DSegmentation_include_dirs ${ImageGraphCut3DSegmentation_include_dirs} ${CMAKE_CURRENT_SOURCE_DIR} ${GridCutDir})
+option(GRIDCUT_LIBRARY_AVAILABLE "Enable GridCut library" ON)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/lib/gridcut/config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/lib/gridcut/config.h)
 
 # Build the graph cut library
 add_subdirectory(lib/kolmogorov-3.03)
@@ -28,6 +25,9 @@ set(ImageGraphCut3DSegmentation_libraries ${ImageGraphCut3DSegmentation_librarie
 include_directories(${ImageGraphCut3DSegmentation_include_dirs})
 
 # Options
+# Include this project
+include_directories(include)
+
 option(ImageGraphCut3DSegmentation_BuildExamples "Build ImageGraphCut3DSegmentation examples?" ON)
 if(ImageGraphCut3DSegmentation_BuildExamples)
   add_subdirectory(Examples)
