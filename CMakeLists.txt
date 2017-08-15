@@ -3,6 +3,9 @@ SET(CMAKE_CXX_STANDARD 14)
 
 project(ImageGraphCut3DSegmentation)
 
+# Build into /bin
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 # ITK
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
