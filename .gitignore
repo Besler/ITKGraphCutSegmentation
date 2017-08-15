@@ -58,6 +58,7 @@ qrc_*.cpp
 ui_*.h
 Makefile*
 *-build-*
+*[bB]uild*
 
 # QtCreator
 *.autosave
