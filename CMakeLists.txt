@@ -3,9 +3,6 @@ SET(CMAKE_CXX_STANDARD 14)
 
 project(ImageGraphCut3DSegmentation)
 
-# Build into /bin
-SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
 # ITK
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
@@ -36,25 +33,25 @@ if(ImageGraphCut3DSegmentation_BuildExamples)
   add_subdirectory(Examples)
 endif()
 
-option(ImageGraphCut3DSegmentation_BuildTests "Build ImageGraphCut3DSegmentation tests?" OFF)
-if(ImageGraphCut3DSegmentation_BuildTests)
+option(ITKGraphCutSegmentation_BuildTests "Build ITKGraphCutSegmentation tests?" OFF)
+if(ITKGraphCutSegmentation_BuildTests)
   # gtest
-  add_subdirectory(lib/gtest-1.7.0)
+  add_subdirectory(lib/googletest)
   enable_testing()
   include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
   include_directories(src)
 
-  # experimental max flow libraries
-  set(Boost_USE_STATIC_LIBS OFF)
-  set(Boost_USE_MULTITHREADED ON)
-  set(Boost_USE_STATIC_RUNTIME OFF)
-  find_package(Boost 1.55.0 COMPONENTS graph)
-
-  if(Boost_FOUND)
-      include_directories(${Boost_INCLUDE_DIRS})
-  endif()
+#  # experimental max flow libraries
+#  set(Boost_USE_STATIC_LIBS OFF)
+#  set(Boost_USE_MULTITHREADED ON)
+#  set(Boost_USE_STATIC_RUNTIME OFF)
+#  find_package(Boost 1.55.0 COMPONENTS graph)
+#
+#  if(Boost_FOUND)
+#      include_directories(${Boost_INCLUDE_DIRS})
+#  endif()
 
   # build the tests
   subdirs(test)
-endif()
+endif(ITKGraphCutSegmentation_BuildTests)
 
