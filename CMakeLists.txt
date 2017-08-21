@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 SET(CMAKE_CXX_STANDARD 14)
 
+if(COMMAND cmake_policy)
+	cmake_policy(SET CMP0053 NEW)
+endif(COMMAND cmake_policy)
+
 project(ImageGraphCut3DSegmentation)
 
 # ITK
