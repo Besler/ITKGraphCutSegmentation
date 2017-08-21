@@ -7,8 +7,8 @@
  *  Some rights reserved.
  */
 
-#ifndef __ImageGraphCutFilter_h_
-#define __ImageGraphCutFilter_h_
+#ifndef __GraphCutImageFilter_h_
+#define __GraphCutImageFilter_h_
 
 // ITK
 #include "itkImageToImageFilter.h"
@@ -24,16 +24,17 @@
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkConstShapedNeighborhoodIterator.h"
 #include "itkNumericTraits.h"
+#include "Graph.h"
 
 // STL
-#include <vector>
+#include <memory> // std::unique_ptr
 
 namespace itk {
     template<typename TInputImage, typename TOutputImage, typename TWeight = unsigned char>
-    class ITK_EXPORT ImageGraphCut3DFilter : public ImageToImageFilter< TInputImage, TOutputImage > {
+    class ITK_EXPORT GraphCutImageFilter : public ImageToImageFilter< TInputImage, TOutputImage > {
     public:
         /** Standard class typedefs. **/
-        typedef ImageGraphCut3DFilter                                 Self;
+        typedef GraphCutImageFilter                                   Self;
         typedef ImageToImageFilter< TInputImage, TOutputImage >       Superclass;
         typedef SmartPointer< Self >                                  Pointer;
         typedef SmartPointer< const Self >                            ConstPointer;
@@ -50,19 +51,21 @@ namespace itk {
         typedef typename OutputImageType::ConstPointer OutputImageConstPointer;
         typedef typename OutputImageType::RegionType   OutputImageRegionType;
         typedef typename OutputImageType::PixelType    OutputImagePixelType;
+        typedef Graph<TWeight>                         GraphType;
 
         /** Iterator typedefs **/
         typedef ImageRegionConstIteratorWithIndex<InputImageType> InputImageIteratorType;
         typedef ConstShapedNeighborhoodIterator<InputImageType>   InputImageNeighborhoodIteratorType;
         typedef ImageRegionIteratorWithIndex<OutputImageType>     OutputImageIteratorType;
-        typedef InputImageNeighborhoodIteratorType::RadiusType    InputImageNeighborhoodIteratorRadiusType;
-        typedef InputImageNeighborhoodIteratorType::IndexType     InputIndexType;
 
-        /** This is a base abstract class. Cannot instantiate. */
-        itkNewMacro(Self); // TODO: Verify if this is correct
+        typedef typename InputImageNeighborhoodIteratorType::RadiusType    InputImageNeighborhoodIteratorRadiusType;
+        typedef typename InputImageNeighborhoodIteratorType::IndexType     InputIndexType;
+
+        /** This is an abstract class. Cannot instantiate. */
+        // itkNewMacro(Self); // Commented out because it is an abstract class
 
         /** Runtime information support. */
-        itkTypeMacro(ImageGraphCut3DFilter, ImageToImageFilter);
+        itkTypeMacro(GraphCutImageFilter, ImageToImageFilter);
 
         /** ImageDimension constants */
         itkStaticConstMacro(InputImageDimension,  unsigned int, TInputImage::ImageDimension);
@@ -77,10 +80,8 @@ namespace itk {
         itkGetConstReferenceMacro(DestroyGraph, bool);
         itkBooleanMacro(DestroyGraph);
 
-        InputImageNeighborhoodIteratorRadiusType GetRadius();
-
         itkSetMacro(IgnoreMaskValue, InputImagePixelType);
-        itkGetMacro(IgnoreMaskValue, OutputImagePixelType);
+        itkGetMacro(IgnoreMaskValue, InputImagePixelType);
         itkSetMacro(BackgroundLabel, OutputImagePixelType);
         itkGetMacro(BackgroundLabel, OutputImagePixelType);
         itkSetMacro(ForegroundLabel, OutputImagePixelType);
@@ -97,54 +98,33 @@ namespace itk {
 #endif
 
     protected:
-        // /** Image container for straightforward access **/
-        // struct ImageContainer {
-        //     typename InputImageConstPointer input;
-        //     typename InputImageRegionType   inputRegion;
-        //     typename OutputImagePointer     output;
-        //     typename OutputImageRegionType  outputRegion; // TODO: Was InputImageType::RegionType. Check
-        // };
-
-        ImageGraphCut3DFilter();
-        virtual ~ImageGraphCut3DFilter();
+        GraphCutImageFilter();
+        virtual ~GraphCutImageFilter();
         void PrintSelf(std::ostream & os, Indent indent) const ITK_OVERRIDE;
         void GenerateData() ITK_OVERRIDE;
 
-        /* TODO: See if we can enable streaming... We should at least only need the input region to be largest*/
+        /* TODO: See if we can enable streaming... We should at least only need the input region to be largest */
         virtual void EnlargeOutputRequestedRegion(DataObject *output) ITK_OVERRIDE;
         /* TODO: Move the neighbourhood iterator to threaded */
         // virtual void BeforeThreadedGenerateData() ITK_OVERRIDE;
         // virtual void AfterThreadedGenerateData() ITK_OVERRIDE;
-        
-        /** Implemented by subclasses per-library **/
-        virtual void InitializeGraph() = 0;
-        virtual void SolveGraph() = 0;
-        virtual void GetGraphCutSegmentation(VertexDescriptorType nodeID) = 0;
-        virtual void DestroyGraph() = 0;
-
-        virtual typename InputImageNeighborhoodIteratorType GetIterator() = 0;
-        virtual void AddNLink(VertexDescriptorType nodeID1, VertexDescriptorType nodeID2, TWeight capacity, TWeight reverseCapacity) = 0;
-        virtual void AddTLink(VertexDescriptorType nodeID, TWeight foregroundTLinkCapacity, TWeight backgroundTLinkCapacity) = 0;
 
         /** Determining edge weights further on **/
         virtual TWeight ComputeRegionalTerm(InputIndexType index, OutputImagePixelType label) = 0;
         virtual TWeight ComputeBoundaryTerm(InputIndexType firstIndex, InputIndexType secondIndex) = 0;
-
-        /** convert itk indices to a continuously numbered indices **/
-        VertexDescriptorType ConvertIndexToVertexDescriptor(const InputIndexType, InputImageRegionType);
     private:
-        ITK_DISALLOW_COPY_AND_ASSIGN(ImageGraphCut3DFilter);
+        ITK_DISALLOW_COPY_AND_ASSIGN(GraphCutImageFilter);
 
-        bool                    m_VerboseOutput;
-        bool                    m_DestroyGraph;
-        InputImagePixelType     m_IgnoreMaskValue;
-        OutputImagePixelType    m_BackgroundLabel;
-        OutputImagePixelType    m_ForegroundLabel;
-    }; /* end class ImageGraphCut3DFilter */
+        bool                       m_VerboseOutput;
+        bool                       m_DestroyGraph;
+        InputImagePixelType        m_IgnoreMaskValue;
+        OutputImagePixelType       m_BackgroundLabel;
+        OutputImagePixelType       m_ForegroundLabel;
+    }; /* end class GraphCutImageFilter */
 } /* end namespace itk */
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "ImageGraphCutFilter.hxx"
+#include "GraphCutImageFilter.hxx"
 #endif /* ITK_MANUAL_INSTANTIATION */
 
-#endif /* __ImageGraphCutFilter_h_ */
+#endif /* __GraphCutImageFilter_h_ */

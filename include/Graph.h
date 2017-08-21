@@ -122,7 +122,7 @@ typename Graph<TWeight>::SegmentationType Graph<TWeight>::GetSegmentation(IndexT
 }
 
 template<typename TWeight>
-static bool Graph<TWeight>::IsForegroundLabel(SegmentationType label) {
+bool Graph<TWeight>::IsForegroundLabel(SegmentationType label) {
   return label == 0;
 }
 

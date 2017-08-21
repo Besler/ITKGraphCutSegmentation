@@ -9,6 +9,10 @@ if (GRIDCUT_LIBRARY_AVAILABLE)
   add_executable(TestGraph TestGraph.cpp)
   target_link_libraries(TestGraph gtest gtest_main ${ITK_LIBRARIES} ${Boost_LIBRARIES})
   add_test(TestGraph TestGraph)
+
+  add_executable(TestGraphCutImageFilter TestGraphCutImageFilter.cpp)
+  target_link_libraries(TestGraphCutImageFilter gtest gtest_main ${ITK_LIBRARIES} ${Boost_LIBRARIES})
+  add_test(TestGraphCutImageFilter TestGraphCutImageFilter)
 endif(GRIDCUT_LIBRARY_AVAILABLE)
 
 # Testing with known segmentations
