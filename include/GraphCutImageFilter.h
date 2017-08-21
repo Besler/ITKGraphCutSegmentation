@@ -86,6 +86,7 @@ namespace itk {
         itkGetMacro(BackgroundLabel, OutputImagePixelType);
         itkSetMacro(ForegroundLabel, OutputImagePixelType);
         itkGetMacro(ForegroundLabel, OutputImagePixelType);
+        itkGetMacro(MaxFlow, TWeight);
 
 #ifdef ITK_USE_CONCEPT_CHECKING
         itkConceptMacro( SameDimension,
@@ -115,11 +116,12 @@ namespace itk {
     private:
         ITK_DISALLOW_COPY_AND_ASSIGN(GraphCutImageFilter);
 
-        bool                       m_VerboseOutput;
-        bool                       m_DestroyGraph;
-        InputImagePixelType        m_IgnoreMaskValue;
-        OutputImagePixelType       m_BackgroundLabel;
-        OutputImagePixelType       m_ForegroundLabel;
+        bool                    m_VerboseOutput;
+        bool                    m_DestroyGraph;
+        InputImagePixelType     m_IgnoreMaskValue;
+        OutputImagePixelType    m_BackgroundLabel;
+        OutputImagePixelType    m_ForegroundLabel;
+        TWeight                 m_MaxFlow;
     }; /* end class GraphCutImageFilter */
 } /* end namespace itk */
 

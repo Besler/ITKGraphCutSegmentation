@@ -10,8 +10,8 @@ namespace {
   public:
     typedef GraphCutImageFilterMock                                      Self;
     typedef itk::GraphCutImageFilter<TInputImage, TOutputImage, TWeight> Superclass;
-    typedef itk::SmartPointer< Self >                                         Pointer;
-    typedef itk::SmartPointer< const Self >                                   ConstPointer;
+    typedef itk::SmartPointer< Self >                                    Pointer;
+    typedef itk::SmartPointer< const Self >                              ConstPointer;
 
     itkNewMacro(Self);
   protected:
@@ -120,5 +120,9 @@ namespace {
   TYPED_TEST(GraphCutImageFilterTest, ForegroundLabelSetter) {
     this->m_Filter->SetForegroundLabel(100);
     EXPECT_DOUBLE_EQ(100, this->m_Filter->GetForegroundLabel());
+  }
+
+  TYPED_TEST(GraphCutImageFilterTest, MaxFlowDefault) {
+    EXPECT_DOUBLE_EQ(0, this->m_Filter->GetMaxFlow());
   }
 }  // namespace

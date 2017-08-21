@@ -19,6 +19,7 @@ namespace itk {
             , m_IgnoreMaskValue(NumericTraits< InputImagePixelType >::ZeroValue())
             , m_BackgroundLabel(NumericTraits< OutputImagePixelType >::ZeroValue())
             , m_ForegroundLabel(NumericTraits< OutputImagePixelType >::OneValue())
+            , m_MaxFlow(NumericTraits< TWeight >::ZeroValue())
     {
         this->SetNumberOfRequiredInputs(1);
     }
@@ -86,6 +87,7 @@ namespace itk {
                 // Continue outside of edge cases
                 InputImagePixelType neighborPixel = iterator.GetPixel(neighborhoodIterator.GetNeighborhoodOffset(), pixelInRegion);
                 if (!pixelInRegion) {
+                    ++neighborhoodIterator;
                     continue;
                 }
                 
@@ -103,6 +105,7 @@ namespace itk {
 
         /* Compute the min-cut/max-flow */
         graph->SolveGraph();
+        m_MaxFlow = graph->GetMaxFlow();
         
         /* Fill output image */
         InputImageIteratorType      inputImageIterator(inputImage, outputImageRegion);
