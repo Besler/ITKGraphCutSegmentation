@@ -8,42 +8,21 @@
 #include "itkImageRegionIteratorWithIndex.h"
 #include "itkShapedNeighborhoodIterator.h"
 
-TEST(Graph, VolumeIndexToCapacityIndex) {
-  typedef char TWeight;
-  Graph<TWeight> graph(1,1,1,1,100);
+template <typename T>
+class GraphTest : public ::testing::Test {
+protected:
+  GraphTest() {
+  }
 
-  itk::Index<3> center, neighbor;
+  virtual ~GraphTest() {
+    // Nothing to do
+  }
+};
 
-  center = {1,0,0}; neighbor = {0, 0, 0};
-  ASSERT_EQ(2, graph.VolumeIndexToCapacityIndex(center, neighbor));
+typedef ::testing::Types<char, int, unsigned int, unsigned char> blah;
+TYPED_TEST_CASE(GraphTest, blah);
 
-  center = {0,0,0}; neighbor = {1, 0, 0};
-  ASSERT_EQ(3, graph.VolumeIndexToCapacityIndex(center, neighbor));
-
-  center = {0,1,0}; neighbor = {0, 0, 0};
-  ASSERT_EQ(4, graph.VolumeIndexToCapacityIndex(center, neighbor));
-
-  center = {0,0,0}; neighbor = {0, 1, 0};
-  ASSERT_EQ(5, graph.VolumeIndexToCapacityIndex(center, neighbor));
-
-  center = {0,0,1}; neighbor = {0, 0, 0};
-  ASSERT_EQ(6, graph.VolumeIndexToCapacityIndex(center, neighbor));
-
-  center = {0,0,0}; neighbor = {0, 0, 1};
-  ASSERT_EQ(7, graph.VolumeIndexToCapacityIndex(center, neighbor));
-}
-
-TEST(Graph, VolumeIndexToCapacityIndexStandardPoints) {
-  typedef char TWeight;
-  Graph<TWeight> graph(1,1,1,1,100);
-
-  itk::Index<3> center, neighbor;
-
-  center = {101,79,56}; neighbor = {100,79,56};
-  ASSERT_EQ(2, graph.VolumeIndexToCapacityIndex(center, neighbor));
-}
-
-TEST(Graph, GetArrayIndexWorks) {
+TYPED_TEST(GraphTest, GetArrayIndexWorks) {
   int d = 3;
   
     typedef unsigned int PixelType;
@@ -59,7 +38,7 @@ TEST(Graph, GetArrayIndexWorks) {
     image->Allocate();
     image->FillBuffer(0);
   
-    typedef char TWeight;
+    typedef TypeParam TWeight;
     int width = d, height = d, depth = d;
     Graph<TWeight> graph(width, height, depth, 1,100);
 
@@ -74,8 +53,8 @@ TEST(Graph, GetArrayIndexWorks) {
     }
 }
 
-TEST(Graph, EmptyCutMaxFlow) {
-  typedef char TWeight;
+TYPED_TEST(GraphTest, EmptyCutMaxFlow) {
+  typedef TypeParam TWeight;
   int width = 2, height = 2, depth = 2;
   Graph<TWeight> graph(width, height, depth, 1,100);
 
@@ -84,7 +63,7 @@ TEST(Graph, EmptyCutMaxFlow) {
   EXPECT_EQ(0, graph.GetMaxFlow());
 }
 
-TEST(Graph, EmptyCutReturnsBackgroundChar) {
+TYPED_TEST(GraphTest, EmptyCutReturnsBackground) {
   typedef unsigned int PixelType;
   const unsigned int Dimension = 3;
   typedef itk::Image< PixelType, Dimension > ImageType;
@@ -98,7 +77,7 @@ TEST(Graph, EmptyCutReturnsBackgroundChar) {
   image->Allocate();
   image->FillBuffer(0);
 
-  typedef char TWeight;
+  typedef TypeParam TWeight;
   int width = 2, height = 2, depth = 2;
   Graph<TWeight> graph(width, height, depth, 1, 100);
 
@@ -113,37 +92,7 @@ TEST(Graph, EmptyCutReturnsBackgroundChar) {
   }
 }
 
-TEST(Graph, EmptyCutReturnsBackgroundFloat) {
-  typedef unsigned int PixelType;
-  const unsigned int Dimension = 3;
-  typedef itk::Image< PixelType, Dimension > ImageType;
-  ImageType::Pointer image = ImageType::New();
-  ImageType::IndexType start;
-  start.Fill(0);
-  ImageType::SizeType size;
-  size.Fill(2);
-  ImageType::RegionType region(start,size);
-  image->SetRegions(region);
-  image->Allocate();
-  image->FillBuffer(0);
-
-
-  typedef float TWeight;
-  int width = 2, height = 2, depth = 2;
-  Graph<TWeight> graph(width, height, depth, 1,100);
-
-  graph.SolveGraph();
-
-  EXPECT_EQ(0, graph.GetMaxFlow());
-
-  itk::ImageRegionIteratorWithIndex<ImageType> imageIterator(image,region);
-  while(!imageIterator.IsAtEnd()) {
-    EXPECT_EQ(1, graph.GetSegmentation(imageIterator.GetIndex()));
-    ++imageIterator;
-  }
-}
-
-TEST(Graph, CutAllForegroundChar) {
+TYPED_TEST(GraphTest, CutAllForegroundChar) {
   int d = 3;
 
   typedef unsigned int PixelType;
@@ -159,7 +108,7 @@ TEST(Graph, CutAllForegroundChar) {
   image->Allocate();
   image->FillBuffer(0);
 
-  typedef char TWeight;
+  typedef TypeParam TWeight;
   int width = d, height = d, depth = d;
   Graph<TWeight> graph(width, height, depth, 1,100);
 
@@ -182,7 +131,7 @@ TEST(Graph, CutAllForegroundChar) {
   }
 }
 
-TEST(Graph, IsForegroundLabel) {
+TYPED_TEST(GraphTest, IsForegroundLabel) {
   int d = 3;
   
     typedef unsigned int PixelType;
@@ -198,7 +147,7 @@ TEST(Graph, IsForegroundLabel) {
     image->Allocate();
     image->FillBuffer(0);
   
-    typedef char TWeight;
+    typedef TypeParam TWeight;
     int width = d, height = d, depth = d;
     Graph<TWeight> graph(width, height, depth, 1,100);
   
@@ -221,7 +170,7 @@ TEST(Graph, IsForegroundLabel) {
   }
 }
 
-TEST(Graph, TLinkCutOnly) {
+TYPED_TEST(GraphTest, TLinkCutOnly) {
   int d = 3;
 
   typedef unsigned int PixelType;
@@ -237,7 +186,7 @@ TEST(Graph, TLinkCutOnly) {
   image->Allocate();
   image->FillBuffer(0);
 
-  typedef char TWeight;
+  typedef TypeParam TWeight;
   int width = d, height = d, depth = d;
   Graph<TWeight> graph(width, height, depth, 1,100);
 
@@ -284,7 +233,7 @@ TEST(Graph, TLinkCutOnly) {
   ASSERT_EQ(14, nEven);
 }
 
-TEST(Graph, NLinkCheck) {
+TYPED_TEST(GraphTest, NLinkCheck) {
   int d = 3;
 
   typedef unsigned int PixelType;
@@ -300,7 +249,7 @@ TEST(Graph, NLinkCheck) {
   image->Allocate();
   image->FillBuffer(0);
 
-  typedef char TWeight;
+  typedef TypeParam TWeight;
   int width = d, height = d, depth = d;
   Graph<TWeight> graph(width, height, depth, 1,100);
 
