@@ -54,7 +54,6 @@ namespace itk {
     ITK_DISALLOW_COPY_AND_ASSIGN(StandardGraphCutImageFilter);
 
     double  m_Sigma;
-    double  m_WeightScale;
   }; // class StandardGraphCutImageFilter
 } /* end namespace itk */
 

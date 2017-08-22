@@ -80,8 +80,6 @@ namespace itk {
         itkGetConstReferenceMacro(DestroyGraph, bool);
         itkBooleanMacro(DestroyGraph);
 
-        itkSetMacro(IgnoreMaskValue, InputImagePixelType);
-        itkGetMacro(IgnoreMaskValue, InputImagePixelType);
         itkSetMacro(BackgroundLabel, OutputImagePixelType);
         itkGetMacro(BackgroundLabel, OutputImagePixelType);
         itkSetMacro(ForegroundLabel, OutputImagePixelType);
@@ -118,7 +116,6 @@ namespace itk {
 
         bool                    m_VerboseOutput;
         bool                    m_DestroyGraph;
-        InputImagePixelType     m_IgnoreMaskValue;
         OutputImagePixelType    m_BackgroundLabel;
         OutputImagePixelType    m_ForegroundLabel;
         TWeight                 m_MaxFlow;
