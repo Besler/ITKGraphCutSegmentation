@@ -16,7 +16,6 @@ namespace itk {
     ::GraphCutImageFilter()
             : m_VerboseOutput(false)
             , m_DestroyGraph(false)
-            , m_IgnoreMaskValue(NumericTraits< InputImagePixelType >::ZeroValue())
             , m_BackgroundLabel(NumericTraits< OutputImagePixelType >::ZeroValue())
             , m_ForegroundLabel(NumericTraits< OutputImagePixelType >::OneValue())
             , m_MaxFlow(NumericTraits< TWeight >::ZeroValue())
@@ -70,11 +69,6 @@ namespace itk {
             // Grab the center pixel and see if it is in our VOI
             typename InputImageNeighborhoodIteratorType::IndexType currentPixelIndex = iterator.GetIndex();
             InputImagePixelType currentPixelValue = iterator.GetPixel({0, 0, 0});
-            if (currentPixelValue == GetIgnoreMaskValue()) {
-                // Hard link to background
-                graph->AddTLink(currentPixelIndex, NumericTraits<TWeight>::ZeroValue(), NumericTraits<TWeight>::max());
-                continue;
-            }
 
             // Compute the regional term, add T link
             TWeight foregroundTLinkCapacity = ComputeRegionalTerm(currentPixelIndex, GetForegroundLabel());
@@ -112,14 +106,10 @@ namespace itk {
         OutputImageIteratorType     outputImageIterator(outputImage, outputImageRegion);
 
         for(inputImageIterator.GoToBegin(), outputImageIterator.GoToBegin(); !outputImageIterator.IsAtEnd(); ++inputImageIterator, ++outputImageIterator) {
-            if (inputImageIterator.Get() == GetIgnoreMaskValue()) { // TODO: Do we need this or is uneccesary branching?
-                outputImageIterator.Set(GetBackgroundLabel());
+            if (graph->IsForegroundLabel(graph->GetSegmentation(inputImageIterator.GetIndex()))) {
+                outputImageIterator.Set(GetForegroundLabel());
             } else {
-                if (graph->IsForegroundLabel(graph->GetSegmentation(inputImageIterator.GetIndex()))) {
-                    outputImageIterator.Set(GetForegroundLabel());
-                } else {
-                    outputImageIterator.Set(GetBackgroundLabel());
-                }
+                outputImageIterator.Set(GetBackgroundLabel());
             }
         }
 
@@ -152,7 +142,6 @@ namespace itk {
 
         os << indent << "VerboseOutput:   " << m_VerboseOutput   << std::endl
            << indent << "DestroyGraph:    " << m_DestroyGraph    << std::endl
-           << indent << "IgnoreMaskValue: " << m_IgnoreMaskValue << std::endl
            << indent << "ForegroundLabel: " << m_ForegroundLabel << std::endl
            << indent << "BackgroundLabel: " << m_BackgroundLabel << std::endl;
     }

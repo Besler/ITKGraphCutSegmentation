@@ -7,9 +7,9 @@ namespace itk {
   ::StandardGraphCutImageFilter()
     : Superclass()
     , m_Sigma(0.1)
-    , m_WeightScale( (itk::NumericTraits<TWeight>::max() - 1) / 6 - itk::NumericTraits<TWeight>::epsilon() )
+    , m_WeightScale( (itk::NumericTraits<double>::max() - 1) / 6.0 - itk::NumericTraits<double>::epsilon() )
   {
-    this->SetNumberOfRequiredInputs(3);
+    this->SetNumberOfRequiredInputs(2);
   }
 
   template<typename TInputImage, typename TGreyImage, typename TOutputImage, typename TWeight>
@@ -20,21 +20,18 @@ namespace itk {
   template<typename TInputImage, typename TGreyImage, typename TOutputImage, typename TWeight>
   TWeight StandardGraphCutImageFilter<TInputImage, TGreyImage, TOutputImage, TWeight>
   ::ComputeRegionalTerm(InputIndexType index, LabelType label)  {
-    // Grab label image
-    LabelImageConstPointerType labelImage = GetLabelInput();
+    // Grab input image
+    InputImageConstPointerType labelImage = Superclass::GetInput();
 
-    if (label == Superclass::GetBackgroundLabel()) {
-      // Hard-link any background labels
-      return (labelImage->GetPixel(index) == Superclass::GetBackgroundLabel())
-        ? itk::NumericTraits<TWeight>::max()
-        : (TWeight)0;
+    if (labelImage->GetPixel(index) == Superclass::GetForegroundLabel()) {
+      return (label == Superclass::GetForegroundLabel()) ? itk::NumericTraits<TWeight>::max() : (TWeight)0;
+    } else if (labelImage->GetPixel(index) == Superclass::GetBackgroundLabel()) {
+      return (label == Superclass::GetBackgroundLabel()) ? itk::NumericTraits<TWeight>::max() : (TWeight)0;
     } else {
-      // Hard-link any foreground labels
-      return (labelImage->GetPixel(index) == Superclass::GetForegroundLabel())
-      ? itk::NumericTraits<TWeight>::max()
-      : (TWeight)0;
+      // We could add a lambda R(A) here.
+      return (TWeight)0;
     }
-  } 
+  }
 
   template<typename TInputImage, typename TGreyImage, typename TOutputImage, typename TWeight>
   TWeight StandardGraphCutImageFilter<TInputImage, TGreyImage, TOutputImage, TWeight>

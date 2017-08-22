@@ -94,16 +94,7 @@ namespace {
     this->m_Filter->DestroyGraphOff();
     EXPECT_FALSE(this->m_Filter->GetDestroyGraph());
   }
-
-  TYPED_TEST(GraphCutImageFilterTest, IgnoreMaskValueDefault) {
-    EXPECT_DOUBLE_EQ(0, this->m_Filter->GetIgnoreMaskValue());
-  }
-
-  TYPED_TEST(GraphCutImageFilterTest, IgnoreMaskValueSetter) {
-    this->m_Filter->SetIgnoreMaskValue(100);
-    EXPECT_DOUBLE_EQ(100, this->m_Filter->GetIgnoreMaskValue());
-  }
-
+  
   TYPED_TEST(GraphCutImageFilterTest, BackgroundLabelDefault) {
     EXPECT_DOUBLE_EQ(0, this->m_Filter->GetBackgroundLabel());
   }

@@ -14,9 +14,9 @@ namespace itk {
     typedef SmartPointer< const Self >                              ConstPointer;
 
     /* Useful typedefs */
-    typedef TOutputImage                              LabelImageType;
-    typedef typename LabelImageType::Pointer          LabelImagePointerType;
-    typedef typename LabelImageType::ConstPointer     LabelImageConstPointerType;
+    typedef TOutputImage                              InputImageType;
+    typedef typename InputImageType::Pointer          InputImagePointerType;
+    typedef typename InputImageType::ConstPointer     InputImageConstPointerType;
     typedef TGreyImage                                GreyImageType;
     typedef typename GreyImageType::PixelType         GreyImagePixelType;
     typedef typename GreyImageType::Pointer           GreyImagePointerType;
@@ -27,24 +27,14 @@ namespace itk {
     itkNewMacro(Self);
     itkTypeMacro(StandardGraphCutImageFilter, GraphCutImageFilter);
 
-    /* Setter/Getter for label */
-    void SetLabelInput(const LabelImageType * input) {
-      // Process object is not const-correct so the const casting is required.
-      this->SetNthInput(1, const_cast< LabelImageType * >( input ) );
-    }
-
-    const LabelImageType * GetLabelInput() const {
-      return itkDynamicCastInDebugMode< LabelImageType * >( const_cast< DataObject * >( this->ProcessObject::GetInput(1) ) );
-    }
-
     /* Setter/Getter for grey image */
     void SetGreyInput(const GreyImageType * input) {
       // Process object is not const-correct so the const casting is required.
-      this->SetNthInput(2, const_cast< GreyImageType * >( input ) );
+      this->SetNthInput(1, const_cast< GreyImageType * >( input ) );
     }
 
     const GreyImageType * GetGreyInput() const {
-      return itkDynamicCastInDebugMode< GreyImageType * >( const_cast< DataObject * >( this->ProcessObject::GetInput(2) ) );
+      return itkDynamicCastInDebugMode< GreyImageType * >( const_cast< DataObject * >( this->ProcessObject::GetInput(1) ) );
     }
 
     itkSetMacro(Sigma, double);
@@ -64,7 +54,7 @@ namespace itk {
     ITK_DISALLOW_COPY_AND_ASSIGN(StandardGraphCutImageFilter);
 
     double  m_Sigma;
-    TWeight m_WeightScale;
+    double  m_WeightScale;
   }; // class StandardGraphCutImageFilter
 } /* end namespace itk */
 
