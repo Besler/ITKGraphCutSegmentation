@@ -83,9 +83,7 @@ private:
 } // namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
-
 #include "ImageGridCutFilter.hxx"
-
 #endif
 
 #endif //__ImageGridCutFilter_h_

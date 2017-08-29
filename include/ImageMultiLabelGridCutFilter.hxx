@@ -136,13 +136,14 @@ namespace itk {
 
                         // Compute the edge weight
                         double weightTmp = 0;
-                        if (centerPixel >= neighborPixel) {
+                        // if (neighborPixel < centerPixel) {
                             weightTmp = exp(-pow(centerPixel - neighborPixel, 2) / (2.0 * this->m_Sigma * this->m_Sigma));
-                        } else {
-                            weightTmp = 1;
-                        }
+                        // } else {
+                            // weightTmp = 1;
+                        // }
                         WeightType weight(0);
                         weight = ((weightFactor-1)/6.0) * weightTmp;// + 1;
+                        // weight = 100 * weightTmp;
                         // std::cout << "weightTmp " << weightTmp << ", weight " << (int)weight << std::endl;
 
                         assert(weight >= 0);

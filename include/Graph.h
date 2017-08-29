@@ -5,7 +5,7 @@
 #include <vector>
 #include <limits>
 
-#include "gtest/gtest_prod.h"
+// #include "gtest/gtest_prod.h"
 
 /*
   Source == object == foreground == 0 (GridCut)
@@ -44,8 +44,8 @@ public:
   static bool IsForegroundLabel(SegmentationType label);
 
 protected:
-  FRIEND_TEST(Graph, VolumeIndexToCapacityIndex);
-  FRIEND_TEST(Graph, VolumeIndexToCapacityIndexStandardPoints);
+  // FRIEND_TEST(Graph, VolumeIndexToCapacityIndex);
+  // FRIEND_TEST(Graph, VolumeIndexToCapacityIndexStandardPoints);
   unsigned int VolumeIndexToCapacityIndex(IndexType center, IndexType neighbour);
 
 private:
@@ -137,12 +137,16 @@ TWeight Graph<TWeight>::GetMaxFlow() {
 
 template<typename TWeight>
 void Graph<TWeight>::AddNLink(IndexType nodeID1, IndexType nodeID2, TWeight capacity, TWeight reverseCapacity) {
+  assert(capacity >= 0);
+  assert(reverseCapacity >= 0);
   m_Cap.at(VolumeIndexToCapacityIndex(nodeID1, nodeID2)).at(GetArrayIndex(nodeID1)) = capacity;
   m_Cap.at(VolumeIndexToCapacityIndex(nodeID2, nodeID1)).at(GetArrayIndex(nodeID2)) = reverseCapacity;
 }
 
 template<typename TWeight>
 void Graph<TWeight>::AddTLink(IndexType nodeID, TWeight foregroundTLinkCapacity, TWeight backgroundTLinkCapacity) {
+  assert(foregroundTLinkCapacity >= 0);
+  assert(backgroundTLinkCapacity >= 0);
   m_Cap.at(0).at(GetArrayIndex(nodeID)) = foregroundTLinkCapacity;
   m_Cap.at(1).at(GetArrayIndex(nodeID)) = backgroundTLinkCapacity;
 }

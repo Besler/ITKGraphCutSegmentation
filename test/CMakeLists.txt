@@ -17,6 +17,10 @@ if (GRIDCUT_LIBRARY_AVAILABLE)
   add_executable(TestStandardGraphCutImageFilter TestStandardGraphCutImageFilter.cpp)
   target_link_libraries(TestStandardGraphCutImageFilter gtest gtest_main ${ITK_LIBRARIES} ${Boost_LIBRARIES})
   add_test(TestStandardGraphCutImageFilter TestStandardGraphCutImageFilter)
+
+  add_executable(TestModifiedSheetnessGraphCutImageFilter TestModifiedSheetnessGraphCutImageFilter.cpp)
+  target_link_libraries(TestModifiedSheetnessGraphCutImageFilter gtest gtest_main ${ITK_LIBRARIES} ${Boost_LIBRARIES})
+  add_test(TestModifiedSheetnessGraphCutImageFilter TestModifiedSheetnessGraphCutImageFilter)
 endif(GRIDCUT_LIBRARY_AVAILABLE)
 
 # Testing with known segmentations
