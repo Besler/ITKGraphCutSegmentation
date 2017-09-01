@@ -7,6 +7,14 @@ namespace itk {
   ::StandardGraphCutImageFilter()
     : Superclass()
     , m_Sigma(0.1)
+    // R(a) > 1 + max sum B(p,q) works out to 1 + 6
+    // R(a) = itk::NumericTraits<TWeight>::max
+    // if b(p,q) = (R(a) - 1)/6 -1 
+    // then R(a) > 1 + 6*( (R(a)-1)/6) -1)
+    //      max > 1 + max -1 -6
+    //      0 > -6
+    // and we meet the hard constraints
+    , m_NumericalScaling(((itk::NumericTraits<TWeight>::max()-1)/6.0 - 1))
   {
     this->SetNumberOfRequiredInputs(2);
   }
@@ -29,7 +37,7 @@ namespace itk {
       weight = (label == Superclass::GetBackgroundLabel()) ? itk::NumericTraits<TWeight>::max() : (TWeight)0;
     } else {
       // We could add a lambda R(A) here.
-      weight = (TWeight)0;
+      weight = (TWeight)(0*m_NumericalScaling);
     }
 
     return static_cast<TWeight>(weight);
@@ -50,7 +58,7 @@ namespace itk {
     // We're dealing with six neighborhood topologies so k = 1 + 6 * B(p,q)
     double difference = firstPixelValue - secondPixelValue;
     double weight = vcl_exp( - vcl_pow(difference, 2) / (2 * vcl_pow(m_Sigma, 2)) );
-    return static_cast<TWeight>(weight);
+    return static_cast<TWeight>(weight*m_NumericalScaling);
   }
 
   template<typename TInputImage, typename TGreyImage, typename TOutputImage, typename TWeight>

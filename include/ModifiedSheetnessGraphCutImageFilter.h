@@ -74,6 +74,7 @@ namespace itk {
     ITK_DISALLOW_COPY_AND_ASSIGN(ModifiedSheetnessGraphCutImageFilter);
 
     double  m_Sigma;
+    double  m_NumericalScaling;
     int     m_BoundaryDirection;
     //TODO: add a boundary direction
   }; // class ModifiedSheetnessGraphCutImageFilter

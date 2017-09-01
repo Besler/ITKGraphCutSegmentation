@@ -252,7 +252,7 @@ namespace {
     // We have to cut the N links for the two background pixels
     // The background pixels are at the corner of the image, so they each have three N links
     // Each N link is 1
-    EXPECT_DOUBLE_EQ(6, this->m_Filter->GetMaxFlow());
+    EXPECT_DOUBLE_EQ(6 * static_cast<TypeParam>((itk::NumericTraits<TypeParam>::max()-1)/6.0 - 1), this->m_Filter->GetMaxFlow());
   }
 
   TYPED_TEST(StandardGraphCutImageFilterTestTLinks, SegmentationIsCorrect) {
