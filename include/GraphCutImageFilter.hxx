@@ -45,7 +45,11 @@ namespace itk {
         // TODO: InitializeGraph needs access to number of verticies, number of edges, etc.
         // InitializeGraph();
         typename InputImageType::SizeType inputImageSize = inputImageRegion.GetSize();
-        std::unique_ptr<GraphType> graph = std::make_unique<GraphType>(
+        //std::unique_ptr<GraphType> graph = std::make_unique<GraphType>(
+        //     inputImageSize[0], inputImageSize[1], inputImageSize[2]
+        //    ,this->GetNumberOfThreads() , 100 // TODO: How to determine block_size?
+        //);
+	GraphType * graph = new GraphType(
              inputImageSize[0], inputImageSize[1], inputImageSize[2]
             ,this->GetNumberOfThreads() , 100 // TODO: How to determine block_size?
         );
@@ -118,6 +122,7 @@ namespace itk {
         //     DestroyGraph();
         // }
         // TODO: Graph falls out of scope and is cleaned up. Maybe we should keep it for fast editing...
+        delete graph;
     }
 
     template<typename TInputImage, typename TOutputImage, typename TWeight>

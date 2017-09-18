@@ -49,7 +49,8 @@ protected:
   unsigned int VolumeIndexToCapacityIndex(IndexType center, IndexType neighbour);
 
 private:
-  std::unique_ptr<GridGraphType> m_Graph;
+  //std::unique_ptr<GridGraphType> m_Graph;
+  GridGraphType * m_Graph;
   unsigned int m_Width, m_Height, m_Depth, m_NumberOfVoxels;
   bool m_IsSolved;
   CapacityMatrix m_Cap;
@@ -66,7 +67,8 @@ Graph<TWeight>::Graph(int width, int height, int depth, int num_threads, int blo
   , m_Depth(depth)
   , m_NumberOfVoxels(width*height*depth)
 {
-  m_Graph = std::make_unique<GridGraphType>(width, height, depth, num_threads, block_size);
+  //m_Graph = std::make_unique<GridGraphType>(width, height, depth, num_threads, block_size);
+  m_Graph = new GridGraphType(width, height, depth, num_threads, block_size);
 
   m_Cap.resize(6 + 2); // 6 neighbours + 2 classes
   m_Cap.at(0) = CapacityType(m_NumberOfVoxels, 0); // Source / foreground
@@ -80,7 +82,9 @@ Graph<TWeight>::Graph(int width, int height, int depth, int num_threads, int blo
 }
 
 template<typename TWeight>
-Graph<TWeight>::~Graph() {/* m_GridGraph automatically cleaned up because it is a std::unique_ptr */}
+Graph<TWeight>::~Graph() {/* m_GridGraph automatically cleaned up because it is a std::unique_ptr */
+	delete m_Graph;
+}
 
 template<typename TWeight>
 typename Graph<TWeight>::NodeIndexType Graph<TWeight>::GetNodeID(IndexType index) {
